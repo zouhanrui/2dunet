@@ -25,6 +25,7 @@ import shutil
 import numpy as np
 from collections import OrderedDict
 import logging
+import sys
 
 import tensorflow as tf
 from scadec import util
@@ -154,7 +155,7 @@ class Trainer_bn(object):
             valid_x, valid_y = valid_provider(valid_size, fix=True)
             util.save_mat(valid_y, "%s/%s.mat"%(self.prediction_path, 'origin_y'))
             util.save_mat(valid_x, "%s/%s.mat"%(self.prediction_path, 'origin_x'))
-
+            
             for epoch in range(epochs):
                 total_loss = 0
                 # batch_x, batch_y = data_provider(self.batch_size)

@@ -74,14 +74,15 @@ class SimpleDataProvider(BaseDataProvider):
 
     def _fix_batch(self, n):
         # first n data
+        startidx = np.random.choice(self.file_count-n, 1, replace=False)
         img = self.data[0]
         nx = img.shape[0]
         ny = img.shape[1]
         X = np.zeros((n, nx, ny, self.img_channels))
         Y = np.zeros((n, nx, ny, self.truth_channels))
         for i in range(n):
-            X[i] = self._process_data(self.data[i])
-            Y[i] = self._process_truths(self.truths[i])
+            X[i] = self._process_data(self.data[startidx+i])
+            Y[i] = self._process_truths(self.truths[startidx+i])
         return X, Y
 
     def _full_batch(self):
