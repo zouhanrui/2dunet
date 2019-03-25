@@ -31,6 +31,26 @@ truth_channels = 1
 """
 
 #-- Training Data --#
+
+mat = spio.loadmat('data/{}.mat'.format(1), squeeze_me=True)
+data = mat['nims'].T
+truth = mat['cims'].T
+for i in range(8):
+        mat = spio.loadmat('data/{}.mat'.format(i+2), squeeze_me=True)
+        data_mat = mat['nims'].T
+        truth_mat = mat['cims'].T
+        data = np.vstack((data, data_mat))
+        truth = np.vstack((truth, truth_mat))
+        
+data = data.swapaxes(1,2)   # (960,320,320)
+truth = truth.swapaxes(1,2)
+data = data.reshape(8640, 320, 320, 1)
+truth = truth.reshape(8640, 320, 320, 1)
+data_train = data[0:7680]
+truth_train = truth[0:7680]
+data_val = data[7680:]
+truth_val = truth[7680:]
+'''
 data_mat = spio.loadmat('data/mc_Subj01_T=400.mat', squeeze_me=True) # [320, 320, 960]
 data_mat = data_mat['mcSubj01'].T   # (960,320,320)
 data_mat = data_mat.swapaxes(1,2)
@@ -44,9 +64,11 @@ truths_mat = truths_mat.swapaxes(1,2)
 truths_mat = truths_mat.reshape(960,320,320,1)
 val_truths = truths_mat[0:96]
 train_truths = truths_mat[96:960]
-
-data_provider = image_util.SimpleDataProvider(train_data, train_truths)
-valid_provider = image_util.SimpleDataProvider(val_data, val_truths)
+'''
+print(data_train.shape)
+print(data_val.shape)
+data_provider = image_util.SimpleDataProvider(data_train, truth_train)
+valid_provider = image_util.SimpleDataProvider(data_val, truth_val)
 
 
 ####################################################
@@ -93,7 +115,7 @@ opt_kwargs = {
 
 # make a trainer for scadec
 trainer = Trainer_bn(net, batch_size=batch_size, optimizer = "adam", opt_kwargs=opt_kwargs)
-path = trainer.train(data_provider, output_path, valid_provider, valid_size, training_iters=216, epochs=1000, display_step=20, save_epoch=100, prediction_path=prediction_path)
+path = trainer.train(data_provider, output_path, valid_provider, valid_size, training_iters=1920, epochs=20, display_step=20, save_epoch=100, prediction_path=prediction_path)
 
 
 

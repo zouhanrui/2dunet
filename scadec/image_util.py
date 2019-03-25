@@ -59,6 +59,7 @@ class SimpleDataProvider(BaseDataProvider):
         self.img_channels = self.data[0].shape[2]
         self.truth_channels = self.truths[0].shape[2]
         self.file_count = data.shape[0]
+        
 
     def _next_batch(self, n):
         idx = np.random.choice(self.file_count, n, replace=False)
@@ -75,6 +76,7 @@ class SimpleDataProvider(BaseDataProvider):
     def _fix_batch(self, n):
         # first n data
         startidx = np.random.choice(self.file_count-n, 1, replace=False)
+        print(startidx)
         img = self.data[0]
         nx = img.shape[0]
         ny = img.shape[1]
